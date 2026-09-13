@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>冯梓垠</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23f5f0e8'/%3E%3Ctext x='32' y='44' font-size='36' font-family='Songti SC,serif' font-weight='700' fill='%236ec6ff' text-anchor='middle'%3E梓%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Sans+SC:wght@700;900&display=swap">
+<style>
+  :root {
+    --bg: #f5f0e8;
+    --ink: #2b2b33;
+    --ink-dim: rgba(43, 43, 51, 0.14);
+    --accent: #6ec6ff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  body {
+    font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  #stage {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .line {
+    display: block;
+    height: var(--lh);
+    line-height: var(--lh);
+    font-size: var(--fs);
+    font-weight: 900;
+    letter-spacing: 0;
+    text-indent: 0;
+  }
+
+  .ch {
+    display: inline-block;
+    position: relative;
+    color: var(--ink-dim);
+    transition: color 0.2s ease, transform 0.18s cubic-bezier(0.22, 0.8, 0.3, 1), text-shadow 0.2s ease;
+    will-change: transform;
+  }
+
+  /* 悬停或点击选中：放大 + 金色光晕，并浮到其他字之上 */
+  .ch:hover,
+  .ch.active {
+    color: var(--accent);
+    transform: scale(1.35);
+    z-index: 10;
+    text-shadow: 0 0 22px rgba(110, 198, 255, 0.6), 0 0 60px rgba(110, 198, 255, 0.3);
+  }
+
+  /* 每组「冯梓垠」之间的间隙 */
+  .ch.gap {
+    margin-right: 0.35em;
+  }
+
+  /* 柔和呼吸的背景辉光，让满屏文字更有层次 */
+  #glow {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 120% 90% at 50% 50%, rgba(110, 198, 255, 0.09), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 15%, rgba(150, 210, 255, 0.1), transparent 70%);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ch { transition: none; }
+    .ch:hover, .ch.active { transform: none; text-shadow: none; }
+  }
+</style>
+</head>
+<body>
+  <div id="stage" aria-label="冯梓垠"></div>
+  <div id="glow"></div>
+
+<script>
+  (function () {
+    var NAME = "冯梓垠";
+    var stage = document.getElementById("stage");
+
+    function fill() {
+      var vw = window.innerWidth;
+      var vh = window.innerHeight;
+
+      // 每行放满若干个完整的「冯梓垠」，并让行宽精确铺满屏幕
+      // 每组含 3 个字 + 0.35em 组间隙
+      var namesPerLine = Math.max(1, Math.floor(vw / (3 * 60)));
+      var fs = vw / (namesPerLine * 3.35);
+      var lh = fs * 1.08; // 行高略大于字高，留一点呼吸感
+      var lines = Math.max(1, Math.ceil(vh / lh) + 1);
+
+      stage.style.setProperty("--fs", fs.toFixed(1) + "px");
+      stage.style.setProperty("--lh", lh.toFixed(1) + "px");
+
+      var lineText = new Array(namesPerLine).fill(NAME).join("");
+
+      // 按需增删行与字符
+      while (stage.childElementCount < lines) {
+        var div = document.createElement("div");
+        div.className = "line";
+        stage.appendChild(div);
+      }
+      while (stage.childElementCount > lines) {
+        stage.removeChild(stage.lastChild);
+      }
+
+      for (var i = 0; i < lines; i++) {
+        var line = stage.children[i];
+        if (line.textContent !== lineText) {
+          line.textContent = "";
+          for (var j = 0; j < lineText.length; j++) {
+            var span = document.createElement("span");
+            span.className = j % 3 === 2 ? "ch gap" : "ch";
+            span.textContent = lineText.charAt(j);
+            line.appendChild(span);
+          }
+        }
+      }
+    }
+
+    var ticking = false;
+    window.addEventListener("resize", function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        fill();
+        ticking = false;
+      });
+    });
+
+    // 点击选中：再次点击取消选中
+    stage.addEventListener("click", function (e) {
+      var t = e.target;
+      if (t && t.classList && t.classList.contains("ch")) {
+        t.classList.toggle("active");
+      }
+    });
+
+    fill();
+  })();
+</script>
+</body>
+</html>
