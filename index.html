@@ -108,8 +108,9 @@
       var vh = window.innerHeight;
 
       // 每行放满若干个完整的「冯梓垠」，并让行宽精确铺满屏幕
-      // 每组含 3 个字 + 0.35em 组间隙
-      var namesPerLine = Math.max(1, Math.floor(vw / (3 * 60)));
+      // 每组含 3 个字 + 0.35em 组间隙；手机窄屏用更小的基准字号
+      var base = (vw <= 480) ? 30 : 60;
+      var namesPerLine = Math.max(1, Math.floor(vw / (3 * base)));
       var fs = vw / (namesPerLine * 3.35);
       var lh = fs * 1.08; // 行高略大于字高，留一点呼吸感
       var lines = Math.max(1, Math.ceil(vh / lh) + 1);
