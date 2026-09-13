@@ -55,8 +55,17 @@
     will-change: transform;
   }
 
-  /* 悬停或点击选中：放大 + 金色光晕，并浮到其他字之上 */
-  .ch:hover,
+  /* 鼠标设备：悬停放大 + 冰蓝光晕，并浮到其他字之上 */
+  @media (hover: hover) {
+    .ch:hover {
+      color: var(--accent);
+      transform: scale(1.35);
+      z-index: 10;
+      text-shadow: 0 0 22px rgba(110, 198, 255, 0.6), 0 0 60px rgba(110, 198, 255, 0.3);
+    }
+  }
+
+  /* 点击选中（手机/鼠标通用）：放大 + 冰蓝光晕，再点一次取消 */
   .ch.active {
     color: var(--accent);
     transform: scale(1.35);
