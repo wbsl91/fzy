@@ -153,11 +153,24 @@
       });
     });
 
-    // 点击选中：再次点击取消选中
+    // 手机端（无 hover 能力）：点击放大后 1.5 秒自动取消；桌面端：点击切换选中
+    var autoDismissMs = (window.matchMedia && window.matchMedia("(hover: none)").matches) ? 1500 : 0;
     stage.addEventListener("click", function (e) {
       var t = e.target;
       if (t && t.classList && t.classList.contains("ch")) {
-        t.classList.toggle("active");
+        if (t.classList.contains("active")) {
+          t.classList.remove("active");
+          if (t._dismissTimer) { clearTimeout(t._dismissTimer); t._dismissTimer = null; }
+        } else {
+          t.classList.add("active");
+          if (autoDismissMs > 0) {
+            if (t._dismissTimer) { clearTimeout(t._dismissTimer); }
+            t._dismissTimer = setTimeout(function () {
+              t.classList.remove("active");
+              t._dismissTimer = null;
+            }, autoDismissMs);
+          }
+        }
       }
     });
 
