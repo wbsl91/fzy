@@ -153,8 +153,8 @@
       });
     });
 
-    // 手机端（无 hover 能力）：点击放大后 0.6 秒自动取消；桌面端：仅悬停放大，点击不生效
-    var autoDismissMs = (window.matchMedia && window.matchMedia("(hover: none)").matches) ? 600 : 0;
+    // 手机端（无 hover 能力）：点击放大后 0.2 秒自动取消；桌面端：仅悬停放大，点击不生效
+    var autoDismissMs = (window.matchMedia && window.matchMedia("(hover: none)").matches) ? 200 : 0;
     stage.addEventListener("click", function (e) {
       var t = e.target;
       if (!t || !t.classList || !t.classList.contains("ch") || autoDismissMs <= 0) return;
